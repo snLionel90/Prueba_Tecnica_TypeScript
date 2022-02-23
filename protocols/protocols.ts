@@ -2,21 +2,20 @@ const getProtocol = (req, res, next) => {
 
     //si el protocolo no se ha encontrado mostrara un error
     if (!req.body.protocols || req.body.protocols.length === 0) {
-      res.status(400).json("There must be at least one valid protocol")
+      res.status(400).json("al menos un protocolo valido")
     }
     //comprobacion, comprueba que uno de los protocolos recividos no estan permitidos
     const disallowedProtocol = getIncorretProtocols(req.body.protocols)
     if(disallowedProtocol === true){
-        res.status(400).json("There are incorrect protocols, check them")
+        res.status(400).json("hay protocolos erroneos, hay que comprobalr")
     }
     //para evitar conflictos entre protocolos se estarblece la funcion getConflictions y se declara una comprobacion
     const conflict = getConflictions(req.body.protocols)
     if (conflict === true) {
-        res.status(400).json("You cannot include protocols that conflict with each other.")
+        res.status(400).json("no puedes mezclas protocolos o crearas un conflicto.")
     }
     //vemos la cantidad de ataques enemigos (los que estan a mas de 100 metros no cuentan)
   const validProtocols = skipLonger(req.body.scan)
-  
   const correctProtocols = {...req.body, scan: validProtocols}
 
   //si solo hay un protocolo, le clavamos la mirada
@@ -30,87 +29,87 @@ const getProtocol = (req, res, next) => {
     : correctProtocols.protocols[0] === "assist-allies"
     ? res.status(200).json(closestEnemies(assistAllies(correctProtocols)))
     : correctProtocols.protocols[0] === "avoid-crossfire"
-    ? (!avoidCrossfire(correctProtocols) ? res.status(400).json("There is no coords without allies") : res.status(200).json(closestEnemies(avoidCrossfire(correctProtocols)))) 
+    ? (!avoidCrossfire(correctProtocols) ? res.status(400).json("no coords sin aliades") : res.status(200).json(closestEnemies(avoidCrossfire(correctProtocols)))) 
     : correctProtocols.protocols[0] === "prioritize-mech"
     ? res.status(200).json(closestEnemies(prioritizeMech(correctProtocols)))
     : correctProtocols.protocols[0] === "avoid-mech"
-    ? (!avoidMech(correctProtocols) ? res.status(400).json("There is no coords without mechs") : res.status(200).json(closestEnemies(avoidMech(correctProtocols)))) 
+    ? (!avoidMech(correctProtocols) ? res.status(400).json("no hay coords") : res.status(200).json(closestEnemies(avoidMech(correctProtocols)))) 
     : null
   }
 //atake a los droides
   if(correctProtocols.protocols.length > 1){
-    let attack
-    let attack2 
-    let attack3  
+    let attax
+    let attax2 
+    let attax3  
 
     if(correctProtocols.protocols.includes("assist-allies")){
-      attack = assistAllies(correctProtocols)
+      attax = assistAllies(correctProtocols)
     }
     if(correctProtocols.protocols.includes("avoid-crossfire")){
-      !attack ? attack = avoidCrossfire(correctProtocols) : attack2 = avoidCrossfire(attack) 
+      !attax ? attax = avoidCrossfire(correctProtocols) : attax2 = avoidCrossfire(attax) 
     }
     if(correctProtocols.protocols.includes("prioritize-mech")){
-      !attack ? attack = prioritizeMech(correctProtocols) : attack2 = prioritizeMech(attack) 
+      !attax ? attax = prioritizeMech(correctProtocols) : attax2 = prioritizeMech(attax) 
     }
     if(correctProtocols.protocols.includes("avoid-mech")){
-      !attack ? attack = avoidMech(correctProtocols) : attack2 = avoidMech(attack) 
+      !attax ? attax = avoidMech(correctProtocols) : attax2 = avoidMech(attax) 
     }
     if(correctProtocols.protocols.includes("furthest-enemies")){
-      !attack2 ? attack2 = furthestEnemies(attack) : attack3 = furthestEnemies(attack2) 
+      !attax2 ? attax2 = furthestEnemies(attax) : attax3 = furthestEnemies(attax2) 
     }else{
-      !attack2 ? attack2 = closestEnemies(attack) : attack3 = closestEnemies(attack2) 
+      !attax2 ? attax2 = closestEnemies(attax) : attax3 = closestEnemies(attax2) 
     }
-    !attack3 ? res.status(200).json(attack2) : res.status(200).json(attack3) 
+    !attax3 ? res.status(200).json(attax2) : res.status(200).json(attax3) 
   }
 
   //cuando no hay coordenadas libres de enemigos
-const closestEnemies = (attack) => {
+const closestEnemies = (attax) => {
   let longest = 100
-  let cordAttack = {}
-  attack.scan.map(x => {
+  let cordAttax = {}
+  attax.scan.map(x => {
     const num = calculateDistance(x.coordinates)
     if (num < longest){
       longest = num
-      cordAttack = x.coordinates
-      return cordAttack
+      cordAttax = x.coordinates
+      return cordAttax
     }
   })
-  return cordAttack
+  return cordAttax
 }
 
 //el enemigo no tiene coordenadas
-const furthestEnemies = (attack) => {
+const furthestEnemies = (attax) => {
   let longest = 0
-  let cordAttack = {} 
-  attack.scan.map(x => {
+  let cordAttax = {} 
+  attax.scan.map(x => {
     const num = calculateDistance(x.coordinates)
     if (num > longest){
       longest = num
-      cordAttack = x.coordinates
+      cordAttax = x.coordinates
     }
-    return cordAttack
+    return cordAttax
   })
-  return cordAttack
+  return cordAttax
 }
 //aliados
-const assistAllies = (attack) => {
+const assistAllies = (attax) => {
   validCood = []
-  attack.scan.filter(x => {
+  attax.scan.filter(x => {
     if(x.allies !== undefined){
       validCood.push(x)
     }
   })
   //sin retorno de coordenadas, habra una llluvia de ataques
   if(validCood.length === 0){
-    return attack
+    return attax
   }
-  validAttack = {...attack, scan: validCood}
+  validAttack = {...attax, scan: validCood}
   return validAttack
 }
 
-const avoidCrossfire = (attack) => {
+const avoidCrossfire = (attax) => {
   validCood = []
-  attack.scan.filter(x => {
+  attax.scan.filter(x => {
     if(x.allies === undefined){
       validCood.push(x)
     }
@@ -119,28 +118,28 @@ const avoidCrossfire = (attack) => {
   if(validCood.length === 0){
     return false
   }
-  validAttack = {...attack, scan: validCood}
+  validAttack = {...attax, scan: validCood}
   return validAttack
 } 
 //
-const prioritizeMech = (attack) => {
+const prioritizeMech = (attax) => {
   validCood = []
-  attack.scan.filter(x => {
+  attax.scan.filter(x => {
     if(x.enemies.type === "mech"){
       validCood.push(x)
     }
   })
   //we will return all attacks without filtering.
   if(validCood.length === 0){
-    return attack
+    return attax
   }
-  validAttack = {...attack, scan: validCood}
+  validAttack = {...attax, scan: validCood}
   return validAttack
 }
 
-const avoidMech = (attack) => {
+const avoidMech = (attax) => {
   validCood = []
-  attack.scan.filter(x => {
+  attax.scan.filter(x => {
     if(x.enemies.type !== "mech"){
       validCood.push(x)
     }
@@ -149,7 +148,7 @@ const avoidMech = (attack) => {
   if(validCood.length === 0){
     return false
   }
-  validAttack = {...attack, scan: validCood}
+  validAttack = {...attax, scan: validCood}
   return validAttack
   }
   //los takes a mas 100 metros es agua
@@ -159,9 +158,7 @@ const skipLonger = (scan) => {
     num = calculateDistance(x.coordinates)
     if (num <= 100){
       validCood.push(scan.filter(y => y.coordinates === x.coordinates)[0])
-    }else{
-      null
-    }
+    }else{null}
   })
   return validCood
 }
@@ -193,5 +190,4 @@ const getIncorretProtocols = (protocols) => {
 }
 
 module.exports = getProtocol
-
 }
