@@ -65,7 +65,7 @@ const getProtocol = (req, res, next) => {
   //cuando no hay coordenadas libres de enemigos
 const closestEnemies = (attax) => {
   let longest = 100
-  let cordAttax = {}
+  let cordAttax = { }
   attax.scan.map(x => {
     const num = calculateDistance(x.coordinates)
     if (num < longest){

@@ -1,6 +1,76 @@
 # Prueba_Tecnica_TypeScript
 # Prueba_tecnica
-<h2>Prueba tecnica de Nodej y Type Script realizado por Lionel Sanchezpara AraTech</h2>
+<label>Prueba tecnica de Nodej y Type Script realizado por Lionel Sanchezpara AraTech</label>
+<h2>Instrucciones</h2>
+
+descarge el repositorio con:
+<ul><li>$ git clone https://github.com/snLionel90/Prueba_Tecnica_TypeScript.git</li></ul> 
+
+El repositorio contiene el script de ejecucion para entornos Linux, ejecutelo con:
+<ul>
+  <li>$ cd %nombre directorio descarga% </li>
+  <li>$ sudo sh .doc/tests.sh</li>
+  <li>Herramientas > Opciones > Proyectos y soluciones > Administración de paquetes web > Herramientas web externas. </li>
+  <li> y para compilar, ve a compilar > Compilar solucion</li>
+</ul>
+
+<h2>se requiere de dependencias para TypeScript, en ese caso se requiere su instalacion.</h2>
+<h3>para ello debera ir al terminal de powershell (en Windows) o desde el propio VS Code e instalarlos con el gestor de paquetes npm, recuerde tener instalado nodejs en su maquina .</h3>
+<ul> 
+    <li>Mediante npm + modulo a instalar.
+    <li>dotenv</li>
+    <li>express</li>
+    <li>dotenv</li>
+    <li>ts-migrate</li>
+    <li>@types/enzyme</li>
+    <li>@types/jest</li>
+    <li>@types/node</li>
+    <li>nodemon</li>
+    <li>tslint-config-prettier</li>
+    <li>ts-jest: "^27.1.3</li>
+    <li>ts-loader: "^9.2.6"</li>
+    <li>ts-node: "^10.5.0"</li>
+    <li>typescript: "^4.5.5"</li>
+</ul>
+
+ENDPOINTS
+
+1 ENDPOINTS ha sido creado, 1 para el post.
+POST /radar
+
+El cuerpo del mensaje será el siguiente:
+
+{
+  "protocols":["closest-enemies","avoid-mech"],
+  "scan":[
+    {
+      "coordinates":{"x":0,"y":1},
+      "enemies":{"type":"mech","number":1}
+    },
+    {
+      "coordinates":{"x":0,"y":10},
+      "enemies":{"type":"soldier","number":10}
+    },
+    {
+      "coordinates":{"x":0,"y":99},
+      "enemies":{"type":"mech","number":1}
+    }
+  ]
+}
+
+The following answer will be found:
+
+{
+  "x": 0,
+  "y": 10
+}
+
+Los siguientes casos de error están recogidos.
+
+    No se envía protocolo
+    Se envían protocolos no permitidos
+    Se envían protocolos en conflicto
+    Se envían ataques a más de 100 metros de distancia
 
 <p>Texto de descripcion</p>
 
